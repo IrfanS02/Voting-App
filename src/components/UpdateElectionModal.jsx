@@ -3,7 +3,7 @@ import {IoMdClose} from 'react-icons/io'
 import { useDispatch } from 'react-redux';
 import { UiActions } from '../store/ui-slice';
 
-const AddElectionModal = () => {
+const UpdateElectionModal = () => {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -13,7 +13,7 @@ const AddElectionModal = () => {
 
     //Close add election modal
     const closeModal = () => {
-        dispatch(UiActions.closeElectionModal())
+        dispatch(UiActions.closeUpdateElectionModal())
     }
 
   return (
@@ -21,7 +21,7 @@ const AddElectionModal = () => {
     <section className="modal">
        <div className="modal_content">
         <header className="modal_header">
-            <h4>Create New Election</h4>
+            <h4>Edit Election</h4>
             <button className="modal_close" onClick={closeModal}><IoMdClose /></button>
         </header>
         <form>
@@ -39,11 +39,11 @@ const AddElectionModal = () => {
                 accept="png, jpg,jpeg,webp,avif" />
             </div>
             <button type="submit"
-            className="btn primary">Add Election</button>
+            className="btn primary">Update Election</button>
         </form>
        </div>
     </section>
   )
 }
 
-export default AddElectionModal
+export default UpdateElectionModal

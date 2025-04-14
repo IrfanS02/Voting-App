@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const initialState = {addCandidateModalShowing: false , voteCandidateModalShowing: false, 
+const initialState = {addCandidateModalShowing: true , voteCandidateModalShowing: false, 
     electionModalShowing: false, updateElectionModalShowing: false}
 
 const uiSlice = createSlice({

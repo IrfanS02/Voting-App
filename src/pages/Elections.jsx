@@ -4,6 +4,7 @@ import Election from '../components/Election'
 import AddElectionModal from '../components/AddElectionModal'
 import {useDispatch, useSelector} from 'react-redux'
 import {UiActions} from '../store/ui-slice'
+import UpdateElectionModal from '../components/UpdateElectionModal'
 
 const Elections = () => {
   const [elections, setElections] = useState(dummyElections)
@@ -15,7 +16,7 @@ const Elections = () => {
   }
 
   const electionModalShowing = useSelector(state => state.ui.electionModalShowing)
-
+  const updateEelectionModalShowing = useSelector(state => state.ui.updateEelectionModalShowing)
   return (
    <>
     <section className="elections">
@@ -35,6 +36,8 @@ const Elections = () => {
     </section> 
 
     {electionModalShowing && <AddElectionModal />}
+    {updateEelectionModalShowing && <UpdateElectionModal />}
+
    </>
   )
 }
