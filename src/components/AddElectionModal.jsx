@@ -16,6 +16,14 @@ const AddElectionModal = () => {
         dispatch(UiActions.closeElectionModal())
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Add your submission logic here
+        
+        // Close modal after submission
+        dispatch(UiActions.closeElectionModal());
+    }
+
   return (
 
     <section className="modal">
@@ -36,10 +44,10 @@ const AddElectionModal = () => {
             <div>
                 <h6>Election Thumbnail:</h6>
                 <input type ="file" name="thumbnail"  onChange ={ e => setThumbnail(e.target.files[0])}
-                accept="png, jpg,jpeg,webp,avif" />
+                accept="image/png, image/jpg, image/jpeg, image/webp, image/avif" />
             </div>
             <button type="submit"
-            className="btn primary">Add Election</button>
+            className="btn primary" onChange={handleSubmit}>Add Election</button>
         </form>
        </div>
     </section>

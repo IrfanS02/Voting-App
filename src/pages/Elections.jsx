@@ -16,7 +16,7 @@ const Elections = () => {
   }
 
   const electionModalShowing = useSelector(state => state.ui.electionModalShowing)
-  const updateEelectionModalShowing = useSelector(state => state.ui.updateEelectionModalShowing)
+  const updateElectionModalShowing = useSelector(state => state.ui.updateElectionModalShowing)
   return (
    <>
     <section className="elections">
@@ -36,7 +36,7 @@ const Elections = () => {
     </section> 
 
     {electionModalShowing && <AddElectionModal />}
-    {updateEelectionModalShowing && <UpdateElectionModal />}
+    {updateElectionModalShowing && <UpdateElectionModal />}
 
    </>
   )

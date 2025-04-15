@@ -37,7 +37,7 @@ const AddCandidateModal = () => {
                 <div>
                     <h6>Candidate Image:</h6>
                     <input type = "file"  name = "image" onChange={ e => 
-                        setImage(e.target.files[0])} accept="png, jpg, jpeg, webp, avif" />
+                        setImage(e.target.files[0])} accept="image/png, image/jpg, image/jpeg, image/webp, image/avif" />
                 </div>
                 <button type="submit" className="btn primary">Add Candidate</button>
             </form>

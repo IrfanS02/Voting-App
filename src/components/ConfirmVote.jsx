@@ -26,9 +26,9 @@ const ConfirmVote = () => {
         })
     }
 
-    useEffect(() =>{
-        fetchCandidate()
-    },[])
+    useEffect(() => {
+        fetchCandidate();
+    }, [selectedVoteCandidate]); // Add dependency
 
   return (
    <section className="modal">
