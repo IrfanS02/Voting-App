@@ -10,7 +10,7 @@ import Candidates from "./pages/Candidates";
 import ElectionDetails from"./pages/ElectionDetails";
 import Congrats from "./pages/Congrats";
 import Logout from "./pages/Logout";
-import "./App.css";
+
 
 const router = createBrowserRouter([
 {
