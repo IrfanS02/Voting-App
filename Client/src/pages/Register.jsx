@@ -1,9 +1,15 @@
 import React,{useState} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import axios from 'axios'
 
 const Register = () => {
   const [userData , setUserData] = useState ({fullName:"", email:"", password:"",password2:""});
 
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
+
+
+  //function to change controlled inputs
   const changeInputHandler = (e) =>{
     setUserData(prevState => {
       return {...prevState,[e.target.name]:e.target.value}
@@ -11,12 +17,29 @@ const Register = () => {
   }
 
 
+// start 3rd day of project expressjs api communications
+
+
+const registerVoter = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/voters/register`,
+      userData
+    );
+    navigate("/");
+  } catch (err) {
+     setError(err.response.data.message)
+  }
+}
+
+
   return (
   <section className="register">
     <div className='container register_container'>
       <h2>Sign Up</h2>
-      <form>
-        <p className='form_error_message'>Any error from the backend</p>
+      <form onSubmit={registerVoter}>
+        {error && <p className='form_error_message'>{error}</p>}
         <input type = "text" name = "fullName" placeholder="Full Name" 
         onChange ={changeInputHandler} autoComplete='true' autoFocus />
         <input type = "email" name = "email" placeholder="Email Address" 
