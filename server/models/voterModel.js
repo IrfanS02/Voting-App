@@ -9,4 +9,4 @@ const voterSchema = new Schema({
     isAdmin : {type: Boolean, default: false}
 }, {timestamps: true})
 
-module.exports = model('Voter', voterSchema)
+module.exports = model('voter', voterSchema)

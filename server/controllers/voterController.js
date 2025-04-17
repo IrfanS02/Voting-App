@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-
+const jwt = require('jsonwebtoken')
 const VoterModel = require('../models/voterModel')
 const HttpError = require('../models/ErrorModel')
 
@@ -52,8 +52,11 @@ const registerVoter = async (req, res, next) =>{
 
 
 
-
-
+//function to generate token
+const generateToken = (payload) =>{
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1d"})
+    return token;
+}
 
 
 
@@ -61,15 +64,49 @@ const registerVoter = async (req, res, next) =>{
 //POST :api/voters/login
 // UNPROTECTED
 const loginVoter = async (req, res, next) =>{
-    res.json("Login Voter");
+   try{
+      const{email, password} = req.body;
+      if(!email || !password){
+        return next(new HttpError("Fill in all fileds.", 422))
+      }
+      const newEmail = email.toLowerCase()
+      const voter = await VoterModel.findOne({email: newEmail})
+      if(!voter){
+        return next(new HttpError("Invalid credentials.", 422))
+      }
+      //compare passwords
+      const comparePass = await bcrypt.compare(password, voter.password)
+      if(!comparePass){
+        return next(new HttpError("Invalid credentials.", 422))
+      }
+      const {_id: id, isAdmin, votedElections} = voter;
+      const token = generateToken({id, isAdmin})
+
+      res.json({token, id, votedElections, isAdmin})
+   }catch(error){
+    return next(new HttpError("Login failed. Please check you credentials or try again later.", 422))
+   }
 }
 
 
-// = =================================== REGISTER NEW VOTER======
+
+
+
+
+
+
+// = =================================== GET VOTER======
 //POST :api/voters/:id
 // PROTECTED
 const getVoter = async (req, res, next) =>{
-    res.json("Get Voter");
+    const {id} = req.params;
+    try{
+        const {id} = req.params;
+        const voter = await VoterModel.findById(id).select("-password")
+        res.json(voter)
+    }catch(error){
+        return next(HttpError("Couldn't get voter.", 404))
+    }
 }
 
 
