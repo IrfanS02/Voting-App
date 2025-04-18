@@ -126,35 +126,86 @@ const removeCandidate =  async(req, res, next) =>{
 // = =================================== VOTE Candidate======
 //PATCH:api/candidates/:id
 // PROTECTED
-const voteCandidate = async (req, res, next) =>{
-    try{
-        const {id: candidateId} = req.params;
-        const {selectedElection} = req.body;
-        //get the candidate
-        const candidate = await CandidateModel.findById(candidateId);
-        const newVoteCount = candidate.voteCount + 1;
-        //update candidate's votes
-        await CandidateModel.findByIdAndUpdate(candidateId, {voteCount: newVoteCount}, {new: true})
-        // start session for relationship between voter and election
-        const sess = await mongoose.startSession();
-        sess.startTransaction()
-        //get the current voter
-        let voter = await VoterModel.findById(req.user.id)
-        await voter.save({session: sess})
-        //get selected election
-        let election = await ElectionModel.findById(selectedElection);
-        election.voters.push(voter);
-        voter.votedElections.push(election);
-        await election.save({session: sess})
-        await voter.save({session: sess})
-        await sess.commitTransaction();
-        res.status(200).json("Vote casted successfully.")
+// const voteCandidate = async (req, res, next) =>{
+//     try{
+//         const {id: candidateId} = req.params;
+//         const {selectedElection} = req.body;
+//         //get the candidate
+//         const candidate = await CandidateModel.findById(candidateId);
+//         const newVoteCount = candidate.voteCount + 1;
+//         //update candidate's votes
+//         await CandidateModel.findByIdAndUpdate(candidateId, {voteCount: newVoteCount}, {new: true})
+//         // start session for relationship between voter and election
+//         const sess = await mongoose.startSession();
+//         sess.startTransaction()
+//         //get the current voter
+//         let voter = await VoterModel.findById(req.user.id)
+//         await voter.save({session: sess})
+//         //get selected election
+//         let election = await ElectionModel.findById(selectedElection);
+//         election.voters.push(voter);
+//         voter.votedElections.push(election);
+//         await election.save({session: sess})
+//         await voter.save({session: sess})
+//         await sess.commitTransaction();
+//         res.status(200).json(voter.votedElections)
 
-    }catch(error){
-        return next(new HttpError(error))
+//     }catch(error){
+//         return next(new HttpError(error))
+//     }
+// }
+//changes this given from chatgpt not from yt
+const voteCandidate = async (req, res, next) => {
+    try {
+      const { id: candidateId } = req.params;
+      const { selectedElection } = req.body;
+  
+      // Get the candidate
+      const candidate = await CandidateModel.findById(candidateId);
+      if (!candidate) {
+        return next(new HttpError("Candidate not found", 404));
+      }
+  
+      // Get the current voter
+      let voter = await VoterModel.findById(req.user.id);
+      if (!voter) {
+        return next(new HttpError("Voter not found", 404));
+      }
+  
+      // ❗ Check if voter already voted in this election
+      if (voter.votedElections.includes(selectedElection)) {
+        return next(new HttpError("Already voted in this election", 400));
+      }
+  
+      // Increment candidate vote count
+      const newVoteCount = candidate.voteCount + 1;
+      await CandidateModel.findByIdAndUpdate(candidateId, { voteCount: newVoteCount }, { new: true });
+  
+      // Start transaction
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+  
+      // Add relationships
+      let election = await ElectionModel.findById(selectedElection);
+      if (!election) {
+        return next(new HttpError("Election not found", 404));
+      }
+  
+      election.voters.push(voter);
+      voter.votedElections.push(election);
+  
+      await election.save({ session: sess });
+      await voter.save({ session: sess });
+  
+      await sess.commitTransaction();
+  
+      res.status(200).json(voter.votedElections);
+  
+    } catch (error) {
+      return next(new HttpError(error.message || "Voting failed", 500));
     }
-}
-
+  };
+  
 
 
 module.exports = {addCandidate, voteCandidate, getCandidate, removeCandidate}
