@@ -1229,7 +1229,7 @@ body.dark .nav_links a {
 }
 /* Add this to your CSS */
 .custom-footer {
-  position: fixed;
+ 
   bottom: 0px; /* Adjust this value to move up/down */
   left: 0;
   width: 100%;
