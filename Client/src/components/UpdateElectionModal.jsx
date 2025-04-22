@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UiActions } from '../store/ui-slice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Loader from './Loader';
 
 const UpdateElectionModal = () => {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [thumbnail, setThumbnail] = useState("");
+    const [loading, setLoading] = useState(false);
     
     const dispatch = useDispatch()
     const idOfElectionToUpdate = useSelector(state => state?.vote?.idOfElectionToUpdate)
@@ -23,12 +25,14 @@ const UpdateElectionModal = () => {
 
     const fetchElection = async() =>{
         try{
+            setLoading(true)
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/elections/${idOfElectionToUpdate}`, 
                 {withCredentials: true, headers: {Authorization: `Bearer ${token}`}
                 })
                 const election = await response.data
                 setTitle(election.title)
                 setDescription(election.description)
+                setLoading(false)
         }catch(error){
             console.log(error)
         }
@@ -42,6 +46,7 @@ const UpdateElectionModal = () => {
     const updateElection = async (e) =>{
         e.preventDefault()
         try{
+            setLoading(true);
            const electionData = new FormData();
            electionData.set('title', title)
            electionData.set('description', description)
@@ -49,6 +54,7 @@ const UpdateElectionModal = () => {
            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/elections/${idOfElectionToUpdate}`, electionData,
             {withCredentials: true, headers: {Authorization: `Bearer ${token}`}
             })
+            setLoading(false)
             closeModal()
             navigate(0)
         }catch(error){
@@ -59,7 +65,8 @@ const UpdateElectionModal = () => {
 
 
   return (
-
+    <>
+    {loading && <Loader />}
     <section className="modal">
        <div className="modal_content">
         <header className="modal_header">
@@ -85,6 +92,7 @@ const UpdateElectionModal = () => {
         </form>
        </div>
     </section>
+    </>
   )
 }
 

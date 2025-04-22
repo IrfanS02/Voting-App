@@ -6,11 +6,18 @@ const Congrats = () => {
 const token = useSelector(state => state?.vote?.currentVoter?.token)
 const navigate = useNavigate()
    //Access control 
-    useEffect(() => {
-      if(!token){
-        navigate('/')
-      }
-    },[])
+   useEffect(() => {
+    if (!token) {
+      navigate('/');
+    } else {
+      const timer = setTimeout(() => {
+        navigate('/results');
+      }, 5000); // 5 seconds
+  
+      return () => clearTimeout(timer); // Cleanup timer
+    }
+  }, []);
+  
 
   return (
     <div>

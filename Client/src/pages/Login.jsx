@@ -1,55 +1,79 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {useDispatch} from "react-redux"
 import {voteActions} from "../store/vote-slice"
+// Import eye icons
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
-  const [userData , setUserData] = useState ({fullName:"", email:"", password:"",password2:""});
+  const [userData, setUserData] = useState({fullName:"", email:"", password:"",password2:""});
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const changeInputHandler = (e) =>{
+
+  const changeInputHandler = (e) => {
     setUserData(prevState => {
       return {...prevState,[e.target.name]:e.target.value}
     })
   }
 
-  const loginVoter = async (e) =>{
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const loginVoter = async (e) => {
     try{
-    e.preventDefault()
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/voters/login`,userData);
+      e.preventDefault()
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/voters/login`,userData);
       const newVoter = await response.data;
-      //save new voter in local storage and update in redux store
       localStorage.setItem("currentUser",JSON.stringify(newVoter))
       dispatch(voteActions.changeCurrentVoter(newVoter))
       navigate("/results");
-  }catch(err) {
+    }catch(err) {
       setError(err.response.data.message);
     }
   }
 
-
-
   return (
-  <section className="Login">
-    <div className='Login Login_container'>
-      <h2>Sign In</h2>
+    <section className="Login">
+      <div className='Login Login_container'>
       <form onSubmit={loginVoter}>
-        {error && <p className='form_error_message'>{error}</p>}
-       
+        <h2>Sign In</h2>
         
-        <input type = "email" name = "email" placeholder="Email Address" 
-        onChange ={changeInputHandler} autoComplete='true'  />
-        <input type = "password" name = "password" 
-        onChange ={changeInputHandler} placeholder="Enter Password" autoComplete='true'  />
-        
-        <p> Dont't have an account? <Link to = '/register'>Sign Up</Link></p>
-        <button type = "submit" className='btn_submit'>Login</button>
-      </form>
-    </div>
-  </section>
+          {error && <p className='form_error_message'>{error}</p>}
+          <input 
+            type = "email" 
+            name = "email" 
+            placeholder="Email Address"
+            onChange ={changeInputHandler} 
+            autoComplete='true' 
+          />
+          
+          <div className="password-input-container">
+            <input 
+              type = {showPassword ? "text" : "password"} 
+              name = "password"
+              onChange ={changeInputHandler} 
+              placeholder="Enter Password" 
+              autoComplete='true' 
+            />
+            <button 
+              type="button" 
+              className="password-toggle"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+          
+          <p> Dont't have an account? <Link to = '/register'>Sign Up</Link></p>
+          <button type = "submit" className='btn_submit'>Login</button>
+        </form>
+      </div>
+    </section>
   )
 }
 

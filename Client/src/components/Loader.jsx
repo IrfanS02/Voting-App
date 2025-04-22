@@ -1,14 +1,14 @@
-import React from 'react'
-import Spinner from '../assets/loading.gif'
+import React from 'react';
+import Spinner from '../assets/loading.png';
 
 const Loader = () => {
   return (
-   <section className="loader">
-    <div className="loader_container">
-        <img src = {Spinner} alt ="Loading Spinner"/>
+    <div className="loader-overlay">
+      <div className="loader-spinner">
+        <img src={Spinner} alt="Loading..." />
+      </div>
     </div>
-   </section>
-  )
-}
+  );
+};
 
-export default Loader
+export default Loader;

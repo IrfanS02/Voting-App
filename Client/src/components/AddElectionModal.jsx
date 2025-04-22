@@ -5,12 +5,14 @@ import { UiActions } from '../store/ui-slice';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Loader from './Loader'; 
 
 const AddElectionModal = () => {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [thumbnail, setThumbnail] = useState("");
+    const [loading, setLoading] = useState(false);
     
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -33,6 +35,7 @@ const AddElectionModal = () => {
     const createElection = async (e) => {
          e.preventDefault()
          try{
+            setLoading(true);
               const electionData = new FormData()
               electionData.set('title', title)
               electionData.set('description', description)
@@ -40,6 +43,7 @@ const AddElectionModal = () => {
               const response = await axios.post(`${import.meta.env.VITE_API_URL}/elections/`, electionData,
                 {withCredentials: true, headers: {Authorization: `Bearer ${token}`}
                 })
+                setLoading(false);
                 closeModal()
                 navigate(0)
          }catch(error){
@@ -48,7 +52,8 @@ const AddElectionModal = () => {
     }
 
   return (
-
+    <>
+     {loading && <Loader />}
     <section className="modal">
        <div className="modal_content">
         <header className="modal_header">
@@ -74,6 +79,7 @@ const AddElectionModal = () => {
         </form>
        </div>
     </section>
+    </>
   )
 }
 

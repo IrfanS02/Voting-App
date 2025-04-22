@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import Loader from './Loader'
 import { UiActions } from '../store/ui-slice'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 const ConfirmVote = ({selectedElection}) => {
 
     const[modalCandidate, setModalCandidate] = useState({})
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -27,6 +28,7 @@ const ConfirmVote = ({selectedElection}) => {
     //get the candidate selected to be voted for
     const fetchCandidate = async () =>{
        try{
+        setLoading(true);
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/candidates/${selectedVoteCandidate}`,
             {
@@ -35,6 +37,7 @@ const ConfirmVote = ({selectedElection}) => {
             }
           )
           setModalCandidate(await response.data)
+          setLoading(false)
        }catch(error){
         console.log(error)
        }
@@ -43,6 +46,7 @@ const ConfirmVote = ({selectedElection}) => {
 // confirm vote for selected candidate
 const confrimVote = async () =>{
     try{
+        setLoading(true)
         const response = await axios.patch(
             `${import.meta.env.VITE_API_URL}/candidates/${selectedVoteCandidate}`,
             {selectedElection},
@@ -53,6 +57,7 @@ const confrimVote = async () =>{
           )
           const voteResult = await response.data;
           dispatch(voteActions.changeCurrentVoter({...currentVoter, votedElections: voteResult}))
+          setLoading(false)
           navigate('/congrats')
         }catch(error){
         console.log(error)
@@ -67,6 +72,8 @@ const confrimVote = async () =>{
     }, []); 
 
   return (
+    <>
+    {loading && <Loader />}
     <section className="modal">
     <div className="modal_content confirm_vote-content">
         <h5>Please Confirm you Vote</h5>
@@ -87,6 +94,7 @@ const confrimVote = async () =>{
         </div>
     </div>
     </section>
+    </>
   )
 }
 
