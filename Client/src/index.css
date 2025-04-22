@@ -1227,3 +1227,40 @@ body.dark .nav_links a {
     transform: rotate(360deg);
   }
 }
+/* Add this to your CSS */
+.custom-footer {
+  position: fixed;
+  bottom: 0px; /* Adjust this value to move up/down */
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.custom-footer p {
+  font-weight: 500;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(235, 235, 241, 0.15) 0%,
+    rgba(173, 170, 179, 0.15) 50%,
+    rgba(154, 144, 156, 0.15) 100%
+  );
+  backdrop-filter: blur(10px);
+   /* Gradient text solution */
+  background: linear-gradient(135deg, #957da8, #5170a3,#ccc, #0e0ed4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* Fallback */
+}
+
+
+.emoji {
+  font-size: 0.9rem;
+}
